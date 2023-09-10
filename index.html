@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editor de Árvore DOM</title>
+    <style>
+        .node {
+            display: inline-block;
+            border: 1px solid #000;
+            padding: 5px;
+            margin: 5px;
+        }
+
+        .connection {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #000;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .selected {
+            background-color: yellow;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Editor de Árvore DOM</h1>
+    <div id="tree">
+        <div class="node" data-parent="">
+            <p>Elemento Pai</p>
+    </div>
+    <div>
+        <button id="remove">Remover Elemento</button>
+        <button id="change">Mudar Propriedades</button>
+        <button id="addChild">Inserir Filho</button>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Função para selecionar um elemento pai
+            $('#tree').on('click', '.node', function() {
+                // Remove a classe 'selected' de todos os elementos
+                $('.node').removeClass('selected');
+                // Adiciona a classe 'selected' ao elemento clicado
+                $(this).addClass('selected');
+            });
+
+            // Função para selecionar um elemento filho
+            $('#tree').on('click', '.node > .node', function(e) {
+                // Remove a classe 'selected' de todos os elementos
+                $('.node').removeClass('selected');
+                // Adiciona a classe 'selected' ao elemento clicado (o filho)
+                $(this).addClass('selected');
+                // Impede a propagação do evento de clique para o pai
+                e.stopPropagation();
+            });
+
+            // Função para remover um elemento e seu ramo
+            $('#remove').click(function() {
+                var selectedElement = $('.selected');
+                selectedElement.remove();
+            });
+
+            // Função para mudar propriedades de um elemento
+            $('#change').click(function() {
+                var selectedElement = $('.selected');
+                // Solicita ao usuário que insira o novo nome
+                var newName = prompt("Digite o novo nome do elemento:", selectedElement.find('p').text());
+
+                // Verifica se o usuário inseriu um novo nome
+                if (newName !== null) {
+                    // Atualiza o texto do elemento com o novo nome
+                    selectedElement.find('p').text(newName);
+                }
+            });
+
+            // Função para inserir um novo elemento como filho
+            $('#addChild').click(function() {
+                var selectedElement = $('.selected');
+                var newElement = $('<div class="node"><p>Novo Elemento</p></div>');
+                selectedElement.append(newElement);
+            });
+        });
+    </script>
+</body>
+</html>
